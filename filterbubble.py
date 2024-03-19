@@ -25,8 +25,16 @@ valid_domains = df['domain'].dropna().apply(extract_domain)
 valid_domains = valid_domains[valid_domains != '']
 valid_domains = valid_domains.apply(lambda x: re.sub(r'^www\.', '', x))
 
+# Undersök innehållet i valid_domains (för felsökning)
+print(valid_domains.head())
+print(valid_domains.apply(type).value_counts())
+
 # Räkna förekomster av domännamn
-domain_counts = valid_domains.value_counts()
+try:
+    domain_counts = valid_domains.value_counts()
+except Exception as e:
+    st.write(f"Ett fel uppstod: {e}")
+    st.stop()
 
 # Visa stapeldiagram med Plotly
 st.write('## Topp 10 Domäner')
