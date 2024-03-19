@@ -1,0 +1,6 @@
+pandas
+tldextract
+plotly
+wordcloud
+matplotlib
+streamlit
