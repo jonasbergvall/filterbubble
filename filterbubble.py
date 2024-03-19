@@ -4,6 +4,8 @@ import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from urllib.parse import urlparse
+import re
+
 
 # Hämta history.csv från URL
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
