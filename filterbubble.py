@@ -12,9 +12,11 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
 # Funktion för att extrahera domännamn
 def extract_domain(url):
-  parsed = tldextract.extract(url)
-  domain = f"{parsed.domain}.{parsed.suffix}"
-  return domain if parsed.subdomain else domain
+    parsed = tldextract.extract(url)
+    domain = f"{parsed.domain}.{parsed.suffix}"
+    # Filtrera bort http och https
+    return re.sub(r'^https?://', '', domain) if parsed.subdomain else re.sub(r'^https?://', '', domain)
+
 
 # Extrahera domäner
 valid_domains = df['domain'].dropna().apply(extract_domain)
