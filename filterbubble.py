@@ -14,10 +14,12 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 def extract_domain(url):
     parsed = tldextract.extract(url)
     domain = f"{parsed.domain}.{parsed.suffix}"
-    # Matcha och ta bort både http och https
-    return re.sub(r'^https?://(www\.)?', '', domain) if parsed.subdomain else re.sub(r'^https?://(www\.)?', '', domain)
-
-
+    print(f"Original URL: {url}")  # Print original URL
+    print(f"Parsed domain: {domain}")  # Print parsed domain before regex
+    # Apply regex filtering
+    domain = re.sub(r'^https?://(www\.)?', '', domain) if parsed.subdomain else re.sub(r'^https?://(www\.)?', '', domain)
+    print(f"Extracted domain: {domain}")  # Print extracted domain after regex
+    return domain
 
 # Extrahera domäner
 valid_domains = df['domain'].dropna().apply(extract_domain)
