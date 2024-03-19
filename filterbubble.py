@@ -17,12 +17,16 @@ def extract_domain(url):
     parsed_url = urlparse(url)
     domain = parsed_url.hostname
     # Filtrera bort subdomäner (t.ex. www)
-    if domain.startswith("www."):
+    if isinstance(domain, str) and domain.startswith("www."):
         domain = domain[4:]
     return domain
 
 # Extrahera domäner
-valid_domains = df['domain'].dropna().apply(extract_domain).dropna()
+try:
+    valid_domains = df['domain'].dropna().apply(extract_domain).dropna()
+except TypeError as e:
+    st.write(f"Ett fel uppstod: {e}\nKontrollera att 'domain'-kolumnen inte innehåller värden som inte är strängar.")
+    st.stop()
 
 # Undersök innehållet i valid_domains (för felsökning)
 # print(valid_domains.head())
