@@ -12,6 +12,9 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 valid_domains = df['domain'].dropna().astype(str)
 valid_domains = valid_domains[valid_domains != '']
 
+st.write('### Valid domains:')
+st.write(valid_domains.head(10))
+
 # Count domain occurrences
 domain_counts = valid_domains.value_counts()
 
