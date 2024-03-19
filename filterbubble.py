@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from urllib.parse import urlparse
 import re
 
-
 # Hämta history.csv från URL
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
 df = pd.read_csv(url, header=None, names=['date', 'domain'])
@@ -25,7 +24,6 @@ valid_domains = df['domain'].dropna().apply(extract_domain)
 
 # Filtrera bort tomma strängar och subdomäner
 valid_domains = valid_domains[valid_domains != '']
-valid_domains = valid_domains.apply(lambda x: re.sub(r'^www\.', '', x))
 
 # Undersök innehållet i valid_domains (för felsökning)
 print(valid_domains.head())
@@ -46,8 +44,8 @@ st.bar_chart(domain_counts.head(10))
 if len(valid_domains) > 0:
   st.write('## Wordcloud av domäner')
 
-  # Filtrera bort korta ord
-  valid_domains_filtered = valid_domains[valid_domains.apply(lambda x: len(x.split('.')) > 1)]
+  # Filtrera bort TLD
+  valid_domains_filtered = valid_domains.apply(lambda x: re.sub(r'\.[a-z]+$', '', x))
 
   # Skapa wordcloud
   if len(valid_domains_filtered) > 0:
