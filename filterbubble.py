@@ -22,7 +22,7 @@ def extract_domain(url):
     return domain
 
 # Extrahera domäner
-valid_domains = df['domain'].dropna(subset=['domain']).apply(extract_domain).dropna()
+valid_domains = df['domain'].dropna().apply(extract_domain).dropna()
 
 # Undersök innehållet i valid_domains (för felsökning)
 # print(valid_domains.head())
