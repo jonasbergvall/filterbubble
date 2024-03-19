@@ -5,8 +5,9 @@ import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-# Read the history.csv file
-df = pd.read_csv('history.csv', header=None, names=['date', 'url'])
+# Read the history.csv file from the URL
+url = 'https://bestofworlds.se/filterbubble/data/history.csv'
+df = pd.read_csv(url, header=None, names=['date', 'url'])
 
 # Extract base domains using tldextract
 extract = tldextract.extract
