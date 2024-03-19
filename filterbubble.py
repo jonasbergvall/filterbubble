@@ -6,48 +6,47 @@ import matplotlib.pyplot as plt
 import tldextract
 import re
 
-# Read the history.csv file from the URL
+# Hämta history.csv från URL
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
 df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
-# Extract domain names from the 'domain' column
+# Funktion för att extrahera domän och protokoll
 def extract_domain(url):
-    parsed = tldextract.extract(url)
-    domain = f"{parsed.domain}.{parsed.suffix}"
-    return domain if parsed.subdomain else parsed.domain
+  parsed = tldextract.extract(url)
+  protocol = parsed.scheme  # Extraherar protokollet (http eller https)
+  domain = f"{parsed.domain}.{parsed.suffix}"
+  return f"{protocol}//{domain}" if parsed.subdomain else f"{protocol}//{parsed.domain}"
 
+# Extrahera domäner med protokoll
 valid_domains = df['domain'].dropna().apply(extract_domain)
 
-# Filter out empty strings and subdomains
+# Filtrera bort tomma strängar och subdomäner
 valid_domains = valid_domains[valid_domains != '']
 valid_domains = valid_domains.apply(lambda x: re.sub(r'^www\.', '', x))
 
-# Remove protocols like 'http' and 'https' from the domains
-valid_domains = valid_domains.apply(lambda x: re.sub(r'^https?://(www\.)?', '', x))
+# Räkna förekomster av protokoll
+protocol_counts = valid_domains.value_counts()
 
-# Count domain occurrences
-domain_counts = valid_domains.value_counts()
+# Visa stapeldiagram med Plotly
+st.write('## Fördelning av http och https')
+st.bar_chart(protocol_counts)
 
-# Display a bar chart of the top 10 domains using Plotly
-st.write('## Top 10 News Sources')
-st.bar_chart(domain_counts.head(10))
-
-# Generate a word cloud only if there are valid words
+# Wordcloud (endast om tillräckligt med data)
 if len(valid_domains) > 0:
-    st.write('## News Source Word Cloud')
+  st.write('## Wordcloud av domäner')
 
-    # Filter out short words (like "com", "se", etc.) from the word cloud
-    valid_domains_filtered = valid_domains[valid_domains.apply(lambda x: len(x.split('.')) > 1)]
+  # Filtrera bort korta ord
+  valid_domains_filtered = valid_domains[valid_domains.apply(lambda x: len(x.split('.')) > 1)]
 
-    # Check if there are any valid domains after filtering
-    if len(valid_domains_filtered) > 0:
-        wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(valid_domains_filtered))
-        fig, ax = plt.subplots()
-        ax.imshow(wordcloud, interpolation='bilinear')
-        ax.axis('off')
-        st.pyplot(fig)
-    else:
-        st.write("Not enough valid domains to create a word cloud.")
+  # Skapa wordcloud
+  if len(valid_domains_filtered) > 0:
+    wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(valid_domains_filtered))
+    fig, ax = plt.subplots()
+    ax.imshow(wordcloud, interpolation='bilinear')
+    ax.axis('off')
+    st.pyplot(fig)
+  else:
+    st.write("Inte tillräckligt med data för att skapa en wordcloud.")
 else:
-    st.write('## News Source Word Cloud')
-    st.write('Not enough valid words to create a word cloud.')
+  st.write('## Wordcloud av domäner')
+  st.write("Inte tillräckligt med data för att skapa en wordcloud.")
