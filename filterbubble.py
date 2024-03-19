@@ -23,7 +23,7 @@ valid_domains = valid_domains[valid_domains != '']
 valid_domains = valid_domains.apply(lambda x: re.sub(r'^www\.', '', x))
 
 # Remove protocols like 'http' and 'https' from the domains
-valid_domains = valid_domains.apply(lambda x: re.sub(r'^https?\://', '', x))
+valid_domains = valid_domains.apply(lambda x: re.sub(r'^https?://(www\.)?', '', x))
 
 # Count domain occurrences
 domain_counts = valid_domains.value_counts()
