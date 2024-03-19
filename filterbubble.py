@@ -12,7 +12,7 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
 # Funktion för att extrahera domännamn
 def extract_domain(url):
-    if url is None:
+    if url is None or url == '':
         return None
     parsed_url = urlparse(url)
     domain = parsed_url.hostname
@@ -22,7 +22,7 @@ def extract_domain(url):
     return domain
 
 # Extrahera domäner
-valid_domains = df['domain'].dropna().apply(extract_domain).dropna()
+valid_domains = df['domain'].dropna(subset=['domain']).apply(extract_domain).dropna()
 
 # Undersök innehållet i valid_domains (för felsökning)
 # print(valid_domains.head())
