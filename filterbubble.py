@@ -38,7 +38,10 @@ if len(valid_domains) > 0:
 
     # Check if there are any valid domains after filtering
     if len(valid_domains_filtered) > 0:
-        wordcloud = WordCloud(width=800, height=400, max_words=50, stopwords=["https", "http"]).generate(' '.join(valid_domains_filtered))
+        # Remove protocols like 'http' and 'https' from the domains
+        valid_domains_filtered = valid_domains_filtered.apply(lambda x: re.sub(r'^https?\://', '', x))
+
+        wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(valid_domains_filtered))
         fig, ax = plt.subplots()
         ax.imshow(wordcloud, interpolation='bilinear')
         ax.axis('off')
