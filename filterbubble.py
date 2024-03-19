@@ -3,17 +3,21 @@ import pandas as pd
 import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import tldextract
 
 # Read the history.csv file from the URL
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
 df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
-# Filter out non-string values and empty strings in the 'domain' column
-valid_domains = df['domain'].dropna().astype(str)
-valid_domains = valid_domains[valid_domains != '']
+# Extract domain names from the 'domain' column
+def extract_domain(url):
+    parsed = tldextract.extract(url)
+    return f"{parsed.domain}.{parsed.suffix}" if parsed.subdomain else f"{parsed.domain}.{parsed.suffix}"
 
-st.write('### Valid domains:')
-st.write(valid_domains.head(10))
+valid_domains = df['domain'].dropna().apply(extract_domain)
+
+# Filter out empty strings
+valid_domains = valid_domains[valid_domains != '']
 
 # Count domain occurrences
 domain_counts = valid_domains.value_counts()
