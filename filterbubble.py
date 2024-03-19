@@ -19,10 +19,14 @@ string_domains = string_domains[string_domains.str.len() > 0]
 st.write('## Top 10 News Sources')
 st.bar_chart(domain_counts.head(10))
 
-# Generate a word cloud
-st.write('## News Source Word Cloud')
-wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(string_domains))
-fig, ax = plt.subplots()
-ax.imshow(wordcloud, interpolation='bilinear')
-ax.axis('off')
-st.pyplot(fig)
+# Generate a word cloud only if there are valid words
+if len(string_domains) > 0:
+    st.write('## News Source Word Cloud')
+    wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(string_domains))
+    fig, ax = plt.subplots()
+    ax.imshow(wordcloud, interpolation='bilinear')
+    ax.axis('off')
+    st.pyplot(fig)
+else:
+    st.write('## News Source Word Cloud')
+    st.write('Not enough valid words to create a word cloud.')
