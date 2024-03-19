@@ -22,6 +22,9 @@ valid_domains = df['domain'].dropna().apply(extract_domain)
 valid_domains = valid_domains[valid_domains != '']
 valid_domains = valid_domains.apply(lambda x: re.sub(r'^www\.', '', x))
 
+# Remove protocols like 'http' and 'https' from the domains
+valid_domains = valid_domains.apply(lambda x: re.sub(r'^https?\://', '', x))
+
 # Count domain occurrences
 domain_counts = valid_domains.value_counts()
 
@@ -38,9 +41,6 @@ if len(valid_domains) > 0:
 
     # Check if there are any valid domains after filtering
     if len(valid_domains_filtered) > 0:
-        # Remove protocols like 'http' and 'https' from the domains
-        valid_domains_filtered = valid_domains_filtered.apply(lambda x: re.sub(r'^https?\://', '', x))
-
         wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(valid_domains_filtered))
         fig, ax = plt.subplots()
         ax.imshow(wordcloud, interpolation='bilinear')
