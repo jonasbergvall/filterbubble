@@ -12,10 +12,15 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
 # Funktion för att extrahera domän och protokoll
 def extract_domain(url):
-  parsed = tldextract.extract(url)
-  protocol = parsed.scheme  # Extraherar protokollet (http eller https)
-  domain = f"{parsed.domain}.{parsed.suffix}"
-  return f"{protocol}//{domain}" if parsed.subdomain else f"{protocol}//{parsed.domain}"
+    try:
+        parsed = tldextract.extract(url)
+        protocol = parsed.scheme
+        domain = f"{parsed.domain}.{parsed.suffix}"
+        return f"{protocol}//{domain}" if parsed.subdomain else f"{protocol}//{parsed.domain}"
+    except Exception as e:
+        print(f"Error processing URL: {url} - {e}")
+        return url  # Return the original URL if parsing fails
+
 
 # Extrahera domäner med protokoll
 valid_domains = df['domain'].dropna().apply(extract_domain)
