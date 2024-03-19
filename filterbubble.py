@@ -12,7 +12,8 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 domain_counts = df['domain'].value_counts()
 
 # Filter out non-string values
-string_domains = domain_counts.index[domain_counts.index.apply(lambda x: isinstance(x, str))]
+string_domains = domain_counts.index.astype(str)
+string_domains = string_domains[string_domains.str.len() > 0]
 
 # Display a bar chart of the top 10 domains using Plotly
 st.write('## Top 10 News Sources')
