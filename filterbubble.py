@@ -3,8 +3,7 @@ import pandas as pd
 import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-import tldextract
-import re
+from urllib.parse import urlparse
 
 # Hämta history.csv från URL
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
@@ -12,13 +11,11 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
 # Funktion för att extrahera domännamn
 def extract_domain(url):
-    parsed = tldextract.extract(url)
-    domain = f"{parsed.domain}.{parsed.suffix}"
-    print(f"Original URL: {url}")  # Print original URL
-    print(f"Parsed domain: {domain}")  # Print parsed domain before regex
-    # Apply regex filtering
-    domain = re.sub(r'^https?://(www\.)?', '', domain) if parsed.subdomain else re.sub(r'^https?://(www\.)?', '', domain)
-    print(f"Extracted domain: {domain}")  # Print extracted domain after regex
+    parsed_url = urlparse(url)
+    domain = parsed_url.hostname
+    # Filtrera bort subdomäner (t.ex. www)
+    if domain.startswith("www."):
+        domain = domain[4:]
     return domain
 
 # Extrahera domäner
