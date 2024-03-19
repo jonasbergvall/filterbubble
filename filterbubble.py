@@ -8,21 +8,21 @@ import matplotlib.pyplot as plt
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
 df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
-# Count domain occurrences
-domain_counts = df['domain'].value_counts()
+# Filter out non-string values and empty strings in the 'domain' column
+valid_domains = df['domain'].dropna().astype(str)
+valid_domains = valid_domains[valid_domains != '']
 
-# Filter out non-string values
-string_domains = domain_counts.index.astype(str)
-string_domains = string_domains[string_domains.str.len() > 0]
+# Count domain occurrences
+domain_counts = valid_domains.value_counts()
 
 # Display a bar chart of the top 10 domains using Plotly
 st.write('## Top 10 News Sources')
 st.bar_chart(domain_counts.head(10))
 
 # Generate a word cloud only if there are valid words
-if len(string_domains) > 0:
+if len(valid_domains) > 0:
     st.write('## News Source Word Cloud')
-    wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(string_domains))
+    wordcloud = WordCloud(width=800, height=400, max_words=50).generate(' '.join(valid_domains))
     fig, ax = plt.subplots()
     ax.imshow(wordcloud, interpolation='bilinear')
     ax.axis('off')
