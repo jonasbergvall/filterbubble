@@ -12,6 +12,8 @@ df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
 # Funktion för att extrahera domännamn
 def extract_domain(url):
+    if url is None:
+        return None
     parsed_url = urlparse(url)
     domain = parsed_url.hostname
     # Filtrera bort subdomäner (t.ex. www)
@@ -20,14 +22,11 @@ def extract_domain(url):
     return domain
 
 # Extrahera domäner
-valid_domains = df['domain'].dropna().apply(extract_domain)
-
-# Filtrera bort tomma strängar och subdomäner
-valid_domains = valid_domains[valid_domains != '']
+valid_domains = df['domain'].dropna().apply(extract_domain).dropna()
 
 # Undersök innehållet i valid_domains (för felsökning)
-print(valid_domains.head())
-print(valid_domains.apply(type).value_counts())
+# print(valid_domains.head())
+# print(valid_domains.apply(type).value_counts())
 
 # Räkna förekomster av domännamn
 try:
