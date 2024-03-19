@@ -1,17 +1,12 @@
 import streamlit as st
 import pandas as pd
-import tldextract
 import plotly.express as px
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
 # Read the history.csv file from the URL
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
-df = pd.read_csv(url, header=None, names=['date', 'url'])
-
-# Extract base domains using tldextract
-extract = tldextract.extract
-df['domain'] = df['url'].apply(lambda x: extract(x).domain)
+df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
 # Count domain occurrences
 domain_counts = df['domain'].value_counts()
