@@ -36,11 +36,15 @@ if len(valid_domains) > 0:
     # Filter out short words (like "com", "se", etc.) from the word cloud
     valid_domains_filtered = valid_domains[valid_domains.apply(lambda x: len(x.split('.')) > 1)]
 
-    wordcloud = WordCloud(width=800, height=400, max_words=50, stopwords=["https", "http"]).generate(' '.join(valid_domains_filtered))
-    fig, ax = plt.subplots()
-    ax.imshow(wordcloud, interpolation='bilinear')
-    ax.axis('off')
-    st.pyplot(fig)
+    # Check if there are any valid domains after filtering
+    if len(valid_domains_filtered) > 0:
+        wordcloud = WordCloud(width=800, height=400, max_words=50, stopwords=["https", "http"]).generate(' '.join(valid_domains_filtered))
+        fig, ax = plt.subplots()
+        ax.imshow(wordcloud, interpolation='bilinear')
+        ax.axis('off')
+        st.pyplot(fig)
+    else:
+        st.write("Not enough valid domains to create a word cloud.")
 else:
     st.write('## News Source Word Cloud')
     st.write('Not enough valid words to create a word cloud.')
