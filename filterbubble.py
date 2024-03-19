@@ -51,3 +51,4 @@ if len(valid_domains) > 0:
 else:
   st.write('## Wordcloud av domäner')
   st.write("Inte tillräckligt med data för att skapa en wordcloud.")
+
