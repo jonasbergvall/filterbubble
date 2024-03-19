@@ -10,31 +10,25 @@ import re
 url = 'https://bestofworlds.se/filterbubble/data/history.csv'
 df = pd.read_csv(url, header=None, names=['date', 'domain'])
 
-# Funktion för att extrahera domän och protokoll
+# Funktion för att extrahera domännamn
 def extract_domain(url):
-    try:
-        parsed = tldextract.extract(url)
-        protocol = parsed.scheme
-        domain = f"{parsed.domain}.{parsed.suffix}"
-        return f"{protocol}//{domain}" if parsed.subdomain else f"{protocol}//{parsed.domain}"
-    except Exception as e:
-        print(f"Error processing URL: {url} - {e}")
-        return url  # Return the original URL if parsing fails
+  parsed = tldextract.extract(url)
+  domain = f"{parsed.domain}.{parsed.suffix}"
+  return domain if parsed.subdomain else domain
 
-
-# Extrahera domäner med protokoll
+# Extrahera domäner
 valid_domains = df['domain'].dropna().apply(extract_domain)
 
 # Filtrera bort tomma strängar och subdomäner
 valid_domains = valid_domains[valid_domains != '']
 valid_domains = valid_domains.apply(lambda x: re.sub(r'^www\.', '', x))
 
-# Räkna förekomster av protokoll
-protocol_counts = valid_domains.value_counts()
+# Räkna förekomster av domännamn
+domain_counts = valid_domains.value_counts()
 
 # Visa stapeldiagram med Plotly
-st.write('## Fördelning av http och https')
-st.bar_chart(protocol_counts)
+st.write('## Topp 10 Domäner')
+st.bar_chart(domain_counts.head(10))
 
 # Wordcloud (endast om tillräckligt med data)
 if len(valid_domains) > 0:
