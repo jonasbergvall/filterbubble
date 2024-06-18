@@ -40,12 +40,12 @@ except Exception as e:
     st.stop()
 
 # Visa stapeldiagram med Plotly
-st.write('## Topp 10 Domäner')
+st.write('## Topp 10 Domains')
 st.bar_chart(domain_counts.head(10))
 
 # Wordcloud (endast om tillräckligt med data)
 if len(valid_domains) > 0:
-  st.write('## Wordcloud av domäner')
+  st.write('## Wordcloud of domains')
 
   # Filtrera bort TLD
   valid_domains_filtered = valid_domains.apply(lambda x: re.sub(r'\.[a-z]+$', '', x))
